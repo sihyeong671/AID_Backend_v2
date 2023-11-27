@@ -19,10 +19,10 @@ git checkout -b feat/<기능 내용>
 
 ## 가상환경 설정 방법
 ```sh
-pyenv install 3.10.11
-pyenv local 3.10.11
+pyenv install 3.10.*
+pyenv local 3.10.*
 # 터미널 재시작 혹은 아래 명령어 실행
-pyenv shell 3.10.11
+pyenv shell 3.10.*
 poetry config virtualenvs.in-project true
 poetry config virtualenvs.path "./.venv"
 poetry config --list # poetry config 확인
