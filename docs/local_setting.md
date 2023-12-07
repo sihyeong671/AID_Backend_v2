@@ -27,6 +27,7 @@ poetry config virtualenvs.in-project true
 poetry config virtualenvs.path "./.venv"
 poetry config --list # poetry config 확인
 poetry install
+# poetry install --no-root
 poetry shell
 pre-commit install
 ```
@@ -35,3 +36,10 @@ pre-commit install
 ## 백엔드 서버 여는 방법
 
 [도커 설치](https://www.docker.com/products/docker-desktop/)
+
+일반 local 환경
+```py
+cd aid_web
+python manage.py migrate
+
+```
