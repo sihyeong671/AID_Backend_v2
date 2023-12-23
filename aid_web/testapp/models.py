@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Model
 
 
+# Ref : https://velog.io/@jewon119/Django-%EA%B8%B0%EC%B4%88-%EB%AA%A8%EB%8D%B8Model-%EA%B4%80%EB%A6%AC%EC%9E%90admin
 class User(models.Model):
     nickname = models.CharField(max_length=20)
     email = models.EmailField(max_length=45, unique=True)
@@ -32,7 +33,7 @@ class Study(Model):
     study_description = models.CharField(max_length=300)
     study_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField()
-    leader_id = models.OneToOneField(User)
+    leader_id = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="leader")
     users = models.ManyToManyField(User)
     img_url = models.CharField(max_length=100)
 
@@ -82,7 +83,7 @@ class Competition(Model):
 # g = Group.objects.get(id=1)
 # print g.user_set.all()  # prints list of all users in the group
 class Question(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL)
+    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=45)
     content = models.TextField()
 
@@ -91,13 +92,13 @@ class Question(Model):
 # 출처: https://technote.kr/197 [TechNote.kr:티스토리]
 class Comment(Model):
     question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
-    writer_id = models.OneToOneField(User, on_delete=models.SET_NULL)
+    writer_id = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
 
 
 class Reply(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL)
-    comment_id = models.ForeignKey(Comment, on_delete=models.SET_NULL)
+    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    comment_id = models.ForeignKey(Comment, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
 
 
@@ -110,7 +111,7 @@ class Apply(Model):
     name = models.CharField(max_length=40)
     email = models.TextField(unique=True)
     student_id = models.TextField(unique=True)
-    phone_number = models.PhoneNumberField()
+    phone_number = models.CharField(max_length=30)
     motive = models.TextField()
     github = models.TextField()
     blog = models.TextField()
