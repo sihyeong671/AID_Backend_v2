@@ -11,7 +11,7 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
 
-# Difference between CharField() & TextField() Q & A
+# Difference between CharField() & TextField() - Q & A
 # Link: https://stackoverflow.com/questions/7354588/whats-the-difference-between-charfield-and-textfield-in-django
 
 # Q:
@@ -24,17 +24,46 @@ class User(models.Model):
 # but AFAIK there are some differences in e.g. MySQL,
 # so this is something to keep in mind.
 
-
 # A good rule of thumb is that you use CharField when you need to limit the maximum length, TextField otherwise.
+
+# ------------------------------------------------------------------ #
+
+# (fields.E304) Reverse accessor - Q & A:
+# Link: https://stackoverflow.com/questions/41595364/fields-e304-reverse-accessor-clashes-in-django
+
+# Q:
+# from django.db import models
+# class Person(models.Model):
+#    name = models.CharField(max_length=64)
+# class Person2Person(models.Model):
+#    person = models.ForeignKey(Person)
+#    friend = models.ForeignKey(Person)
+
+# A:
+# The code is wrong because Person will get a reverse relationship back to Person2Person.person,
+# and also to Person2Person.friend; the default name would be Person.person2person_set
+# but Django can't use the same name for both.
+
+# So you could set a related_name on either, or both:
+
+# class Person2Person(models.Model):
+#    person = models.ForeignKey(Person, related_name='person2persons')
+#    friend = models.ForeignKey(Person, related_name='friends')
+
+# Now Person.friend's related to the Person2Person objects that have this Person as a friend,
+#    and Person.person2person to the ones that have this Person as a person.
+# However, why aren't you using a ManyToManyField to 'self' on Person?
+
+
 class Study(Model):
     study_name = models.CharField(max_length=50)
-    # CharField()? TextField()?
     study_description = models.CharField(max_length=300)
     study_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField()
-    leader_id = models.OneToOneField(User)
-    users = models.ManyToManyField(User)
+    leader_id = models.OneToOneField(User, on_delete=models.DO_NOTHING, related_name="leader", null=True)
+    users = models.ManyToManyField(User, related_name="participants")
     img_url = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now=True)
 
 
 class Project(Model):
@@ -43,6 +72,7 @@ class Project(Model):
     project_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField()
     users = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now=True)
 
 
 class Competition(Model):
@@ -51,9 +81,10 @@ class Competition(Model):
     competition_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField()
     users = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now=True)
 
 
-# ManytoOneField Q & A
+# ManytoOneField - Q & A
 # Link: https://stackoverflow.com/questions/888550/manytoonefield-in-django
 
 # Q:
@@ -82,23 +113,26 @@ class Competition(Model):
 # g = Group.objects.get(id=1)
 # print g.user_set.all()  # prints list of all users in the group
 class Question(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL)
+    writer_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=45)
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)
 
 
 # "on delete cascade"는 B tuple이 foreign key로 A tuple을 가리키고 있을 때, A tuple을 삭제하면 B tuple도 같이 삭제되는 기능이다.
-# 출처: https://technote.kr/197 [TechNote.kr:티스토리]
+# Link: https://technote.kr/197 [TechNote.kr:티스토리]
 class Comment(Model):
     question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
-    writer_id = models.OneToOneField(User, on_delete=models.SET_NULL)
+    writer_id = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)
 
 
 class Reply(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL)
-    comment_id = models.ForeignKey(Comment, on_delete=models.SET_NULL)
+    writer_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    comment_id = models.ForeignKey(Comment, on_delete=models.DO_NOTHING)
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)
 
 
 class Tag(Model):
@@ -110,7 +144,8 @@ class Apply(Model):
     name = models.CharField(max_length=40)
     email = models.TextField(unique=True)
     student_id = models.TextField(unique=True)
-    phone_number = models.PhoneNumberField()
-    motive = models.TextField()
-    github = models.TextField()
-    blog = models.TextField()
+    phone_number = models.CharField(max_length=11)
+    motive = models.CharField(max_length=500)
+    github_link = models.TextField()
+    blog_link = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)

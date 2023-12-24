@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # Django RestFrameWork 사용
+    "django_seed",
+    "testapp",
 ]
 
 MIDDLEWARE = [
