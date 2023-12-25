@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Model
 
 
+# Ref : https://velog.io/@jewon119/Django-%EA%B8%B0%EC%B4%88-%EB%AA%A8%EB%8D%B8Model-%EA%B4%80%EB%A6%AC%EC%9E%90admin
 class User(models.Model):
     nickname = models.CharField(max_length=20)
     email = models.EmailField(max_length=45, unique=True)
@@ -60,8 +61,8 @@ class Study(Model):
     study_description = models.CharField(max_length=300)
     study_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField()
-    leader_id = models.OneToOneField(User, on_delete=models.DO_NOTHING, related_name="leader", null=True)
-    users = models.ManyToManyField(User, related_name="participants")
+    leader = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="leader")
+    users = models.ManyToManyField(User)  # realted name
     img_url = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now=True)
 
@@ -113,7 +114,7 @@ class Competition(Model):
 # g = Group.objects.get(id=1)
 # print g.user_set.all()  # prints list of all users in the group
 class Question(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=45)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
@@ -123,14 +124,14 @@ class Question(Model):
 # Link: https://technote.kr/197 [TechNote.kr:티스토리]
 class Comment(Model):
     question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
-    writer_id = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+    writer_id = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
 
 class Reply(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    comment_id = models.ForeignKey(Comment, on_delete=models.DO_NOTHING)
+    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    comment_id = models.ForeignKey(Comment, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
@@ -144,8 +145,7 @@ class Apply(Model):
     name = models.CharField(max_length=40)
     email = models.TextField(unique=True)
     student_id = models.TextField(unique=True)
-    phone_number = models.CharField(max_length=11)
-    motive = models.CharField(max_length=500)
-    github_link = models.TextField()
-    blog_link = models.TextField()
-    created_at = models.DateTimeField(auto_now=True)
+    phone_number = models.CharField(max_length=30)
+    motive = models.TextField()
+    github = models.TextField()
+    blog = models.TextField()
