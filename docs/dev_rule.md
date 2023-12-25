@@ -6,14 +6,13 @@
 > **feat/<기능>**: clone후 작업해야할 브랜치, 이런 이름의 브랜치를 파고 작업후 dev로 PR한다.<br/>
 > **hotfix/<수정내용>**: 긴급한 수정내용인 경우 main에서 새로 분기하여 작업해 main에 merge하고 삭제한다.<br/>
 
-## 작업 후 PR 방법
-feat/<기능 내용>에서 작업한 후 아래 내용 실행
-```sh
-git pull upstream dev # 달라진 내용 있으면 반영
-git checkout -b dev
-git merge feat/<기능 내용>
-```
-이후 깃허브로 이동후 PR 보내기
+## 작업 순서
+1. upstream repository에서 issue 등록
+2. origin repo에서 작업 branch(`feat/<기능내용>`) 생성
+3. 기능 작성 후 commit
+4. dev branch에 checkout하고 작성 branch merge
+5. 기능 테스트
+6. upstream repo에 PR
 
 
 ## Commit Convention
