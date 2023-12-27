@@ -78,12 +78,12 @@ WSGI_APPLICATION = "aid_web.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("mysql_db_name"),
-        "USER": os.environ.get("mysql_user"),
-        "PASSWORD": os.environ.get("mysql_password"),
-        "HOST": os.environ.get("mysql_host"),
-        "PORT": os.environ.get("mysql_port"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("postgresql_db_name"),
+        "USER": os.environ.get("postgresql_user"),
+        "PASSWORD": os.environ.get("postgresql_password"),
+        "HOST": os.environ.get("postgresql_host"),
+        "PORT": os.environ.get("postgresql_port"),
     }
 }
 
