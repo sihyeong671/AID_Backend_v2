@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "testapp.apps.TestappConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # Django RestFrameWork 사용
+    "testapp",
 ]
 
 MIDDLEWARE = [
@@ -76,8 +79,12 @@ WSGI_APPLICATION = "aid_web.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("mysql_db_name"),
+        "USER": os.environ.get("mysql_user"),
+        "PASSWORD": os.environ.get("mysql_password"),
+        "HOST": os.environ.get("mysql_host"),
+        "PORT": os.environ.get("mysql_port"),
     }
 }
 

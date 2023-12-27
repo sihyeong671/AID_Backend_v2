@@ -3,7 +3,7 @@
 github repo fork
 ```sh
 git clone [fork한 본인 repo의 url]
-git remote add upstream ''
+git remote add upstream https://github.com/PNU-AID/AID_Backend_v2.git
 git remote -v
 # upstream(협업 repo내용)과 동기화 하려면 아래 명령어 실행
 git pull upstream dev
@@ -40,6 +40,7 @@ pre-commit install
 일반 local 환경
 ```py
 cd aid_web
+python manage.py makemigrations
 python manage.py migrate
 
 ```
