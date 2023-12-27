@@ -1,4 +1,5 @@
-from .base import BASE_DIR, set_db
+# flake8: noqa
+from .base import *  # noqa
 
 # ALLOWED_HOSTS = []
 
