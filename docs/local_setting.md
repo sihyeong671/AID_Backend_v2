@@ -26,8 +26,9 @@ pyenv shell 3.10.11
 poetry config virtualenvs.in-project true
 poetry config virtualenvs.path "./.venv"
 poetry config --list # poetry config 확인
-poetry install
-# poetry install --no-root
+
+# poetry lock --no-update
+poetry install --no-root
 poetry shell
 pre-commit install
 ```
