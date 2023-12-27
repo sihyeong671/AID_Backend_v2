@@ -114,7 +114,7 @@ class Competition(Model):
 # g = Group.objects.get(id=1)
 # print g.user_set.all()  # prints list of all users in the group
 class Question(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=45)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
@@ -123,15 +123,15 @@ class Question(Model):
 # "on delete cascade"는 B tuple이 foreign key로 A tuple을 가리키고 있을 때, A tuple을 삭제하면 B tuple도 같이 삭제되는 기능이다.
 # Link: https://technote.kr/197 [TechNote.kr:티스토리]
 class Comment(Model):
-    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
-    writer_id = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    writer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
 
 class Reply(Model):
-    writer_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    comment_id = models.ForeignKey(Comment, on_delete=models.SET_NULL, null=True)
+    writer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    comment = models.ForeignKey(Comment, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
