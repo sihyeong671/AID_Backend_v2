@@ -35,7 +35,7 @@ pre-commit install
 [install docker](https://www.docker.com/products/docker-desktop/)
 
 ```py
-docker compsoe up -f docker-compose.local.yaml -d
+docker compose -f docker-compose.local.yaml up -d
 
 cd aid_web
 
