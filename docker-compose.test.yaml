@@ -7,8 +7,7 @@ services:
   server:
     container_name: DjangoApp
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     restart: always
     build:
       context: .
@@ -20,8 +19,7 @@ services:
       - 8000:8000
     environment:
       TZ: "Asia/Seoul"
-    env_file:
-      - ./env/.server.env
+      DJANGO_SETTINGS_MODULE: config.settings.test
     networks:
       - aid
 
@@ -39,12 +37,6 @@ services:
       - ./env/.db.env
     networks:
       - aid
-    # postgresql 서버가 열리고 django를 실행시키도록 healthcheck 후에 django container run (https://int-i.github.io/sql/2021-08-21/postgres-docker-compose/)
-    # TODO: pg_isready 안전하게 호출
-    # healthcheck:
-    #   test: ["CMD", "pg_isready", "-d", "template0"]
-    #   timeout: 5s
-    #   retries: 100
 
 networks:
   aid:

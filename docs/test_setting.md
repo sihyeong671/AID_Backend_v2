@@ -15,10 +15,10 @@ git remote add upstream https://github.com/PNU-AID/AID_Backend_v2.git
 
 ## 가상환경 설정 방법
 ```sh
-pyenv install 3.10.*
-pyenv local 3.10.*
+pyenv install 3.10.11
+pyenv local 3.10.11
 # 터미널 재시작 혹은 아래 명령어 실행
-pyenv shell 3.10.*
+pyenv shell 3.10.11
 poetry config virtualenvs.in-project true
 poetry config virtualenvs.path "./.venv"
 poetry config --list # poetry config 확인
@@ -32,20 +32,12 @@ pre-commit install
 
 ## 로컬환경에서 백엔드 서버 여는 방법
 
-[install docker](https://www.docker.com/products/docker-desktop/)
+[도커 설치](https://www.docker.com/products/docker-desktop/)
 
+일반 local 환경
 ```py
-docker compose -f docker-compose.local.yaml up -d
-
 cd aid_web
-
-# 슈퍼유저 생성
-# python manage.py createsuperuser
-
-# 변경사항 있을 경우 아래 명령어 실행
-# python manage.py makemigrations
-# python manage.py migrate
-python manage.py runserver --settings=config.settings.local
+python manage.py makemigrations
+python manage.py migrate
 
 ```
-127.0.0.1:8000에서 동작 확인
