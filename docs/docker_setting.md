@@ -1,12 +1,43 @@
-# Develop Server
+# Docker settings
 
-## docker-compose.yaml
+## 환경 별 docker-compose 및 실행 방법
+### Develop(Local) Server
+개발 환경.
+PostgreSQL database 서버는 docker로 띄우고, Django는 local에서 실행.
+
+1) Database server 실행
+```bash
+docker compose -f docker-compose.local.yaml up -d
+```
+2) Django 실행(본인 컴퓨터로 실행)
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver [optional_arguments]
+```
+
+### Test Server
+Test 환경
+PostgreSQL database 서버 및 Django 모두 docker로 실행.
+
+```bash
+# run container
+docker compose -f docker-compose.test.yaml up -d
+
+# stop container and remove volume
+docker compose -f docker-compose.test.yaml down -v
+```
+
+## docker관련 파일 구성요소
+### docker-compose.yaml
 - docker compose를 사용해, nginx 서버(미구현), Django, PostgreSQL 서버 각각의 container를 deploy할 수 있도록 해주는 파일
 - docker container는 `aid` 이름의 network 사용
 - `server` : Django server
+  - test, production 환경에서만 deploy.
   - Django는 `manage.py`를 실행시켜 동작, runserver 이전 makemigrations 및 migrate 수행.
   - 8000번 port 사용
   - Django 내의 `settings.py` 에서 PostgreSQL 서버에 접속하기 위한 환경 변수 파일은 `./env/.server.env` 사용
+  - `DJANGO_SETTINGS_MODULE` 환경변수를 이용해 각 배포 환경에 따라 다른 django settings 파일을 사용함.
 - `db` : PostgreSQL server
   - `postgres:16-alpine` image 사용. 효율성을 위해 가벼운 alpine linux 사용
   - database 파일은 `/var/lib/postgresql/data` mount
@@ -26,6 +57,6 @@
   TZ=Asia/Seoul
   ```
 
-## Dockerfile
+### Dockerfile
 Django용 이미지 생성을 위한 Dockerfile. poetry 설치 후, pyproject.toml 내의 패키지 설치
 Django 서버 이미지 생성을 위한 도커 파일

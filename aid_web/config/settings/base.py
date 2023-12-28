@@ -13,8 +13,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# settings 폴더의 추가로 .parent 추가.
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -53,7 +56,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "aid_web.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -71,22 +74,28 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "aid_web.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("postgresql_db_name"),
-        "USER": os.environ.get("postgresql_user"),
-        "PASSWORD": os.environ.get("postgresql_password"),
-        "HOST": os.environ.get("postgresql_host"),
-        "PORT": os.environ.get("postgresql_port"),
+
+# base setting이 환경 별 setting에서 import되는데,
+# DATABASES 설정은 환경 별 env 파일을 불러온 뒤에 이루어져야 하므로
+# DATABASES 설정을 함수화하여 환경 별 settings에서 base setting import가 이루어진 뒤, DATABASES 설정.
+def set_db(dotenv_path):
+    load_dotenv(dotenv_path)
+    return {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("postgresql_db_name"),
+            "USER": os.environ.get("postgresql_user"),
+            "PASSWORD": os.environ.get("postgresql_password"),
+            "HOST": os.environ.get("postgresql_host"),
+            "PORT": os.environ.get("postgresql_port"),
+        }
     }
-}
 
 
 # Password validation
