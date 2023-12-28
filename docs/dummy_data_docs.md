@@ -92,7 +92,7 @@ testapp
     │ ...
 ```
 
-### 2. `setting.py`에 `testapp(앱 폴더명)` 추가
+### 2. `base.py`에 `testapp(앱 폴더명)` 추가
 
 ```python
 INSTALLED_APPS = (
