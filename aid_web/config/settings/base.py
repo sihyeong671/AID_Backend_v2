@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # Django RestFrameWork 사용
+    "seeding",  # 더미 데이터 생성용(폴더 이름)
 ]
 
 MIDDLEWARE = [
