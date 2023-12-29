@@ -1,10 +1,15 @@
 # How to start
 
-github repo fork
+github repo fork(모든 브랜치 가져오도록 함)
 ```sh
 git clone [fork한 본인 repo의 url]
 git remote add upstream https://github.com/PNU-AID/AID_Backend_v2.git
 # git remote -v
+git checkout dev
+```
+```sh
+# main 브랜치만 가져왔을 경우 아래 명령어 실행
+# git checkout -b dev upstream/dev
 ```
 
 ## Setting
