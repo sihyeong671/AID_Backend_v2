@@ -15,9 +15,9 @@ class Command(BaseCommand):
         parser.add_argument("--study", default=0, type=int, help="몇 개의 스터디 데이터를 만드나.")
 
     def handle(self, *args: Any, **options: Any) -> str | None:
-        user = options.get("user")
         superuser = options.get("superuser")
-        # study = options.get("study")
+        user = options.get("user")
+        options.get("study")
 
         # 한국 지역에 적용되는 값을 가져옴
         # faker docs Link: https://faker.readthedocs.io/en/master/locales/ko_KR.html
@@ -28,9 +28,9 @@ class Command(BaseCommand):
             User,
             superuser,
             {
-                "nickname": lambda x: "어드민",
-                "email": lambda x: "admin@cse.com",
-                "password": lambda x: "a123456789!",
+                "nick_name": lambda x: seeder.faker.unique.name_female(),
+                "email": lambda x: seeder.faker.unique.email(),
+                "password": lambda x: seeder.faker.msisdn(),
                 "is_admin": lambda x: True,
             },
         )
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             User,
             user,
             {
-                "nickname": lambda x: seeder.faker.name_female(),
+                "nick_name": lambda x: seeder.faker.unique.name_male(),
                 "email": lambda x: seeder.faker.unique.email(),
                 "password": lambda x: seeder.faker.msisdn(),
                 "is_admin": lambda x: False,
