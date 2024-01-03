@@ -7,15 +7,15 @@ from userapp.models import User
 
 # 예시: python manage.py seed_users --superuser=1 --user=10 --study=5
 class Command(BaseCommand):
-    help = "랜덤한 유저 데이터 생성을 이 커맨드를 활용해 할 수 있음"
+    help = "you can use this command for making random user data"
 
     def add_arguments(self, parser: CommandParser) -> None:
-        parser.add_argument("--superuser", default=0, type=int, help="몇 명의 슈퍼_유저 데이터를 만드나.")
-        parser.add_argument("--user", default=0, type=int, help="몇 명의 유저 데이터를 만드나.")
-        parser.add_argument("--study", default=0, type=int, help="몇 개의 스터디 데이터를 만드나.")
+        parser.add_argument("--superuser", default=0, type=int, help="생성할 슈퍼 유저 수")
+        parser.add_argument("--user", default=0, type=int, help="생성할 유저 수")
+        parser.add_argument("--study", default=0, type=int, help="생성할 스터디 수")
 
-    def handle(self, *args: Any, **options: Any) -> str | None:
-        superuser = options.get("superuser")
+    def handle(self, *args: Any, **options: Any):
+        options.get("superuser")
         user = options.get("user")
         options.get("study")
 
@@ -24,17 +24,16 @@ class Command(BaseCommand):
         seeder = Seed.seeder(locale="ko_KR")
 
         # superuser 데이터를 만들 때는
-        seeder.add_entity(
-            User,
-            superuser,
-            {
-                "nick_name": lambda x: seeder.faker.unique.name_female(),
-                "email": lambda x: seeder.faker.unique.email(),
-                "password": lambda x: seeder.faker.msisdn(),
-                "is_admin": lambda x: True,
-            },
-        )
-        # create super user
+        # seeder.add_entity(
+        #     User,
+        #     superuser,
+        #     {
+        #         "nick_name": lambda x: seeder.faker.unique.name_female(),
+        #         "email": lambda x: seeder.faker.unique.email(),
+        #         "password": lambda x: seeder.faker.msisdn(),
+        #         "is_admin": lambda x: True,
+        #     },
+        # )
 
         seeder.add_entity(
             User,
