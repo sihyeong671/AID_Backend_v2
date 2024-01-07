@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
     "studyapp.apps.StudyappConfig",
+    "projectapp.apps.ProjectappConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
