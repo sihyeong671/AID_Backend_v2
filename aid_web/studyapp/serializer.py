@@ -1,7 +1,9 @@
+from typing import Any
+
 from rest_framework import serializers
 from userapp.models import User
 
-from .models import Study
+from .models import Study, StudyUserRelation
 
 # https://www.django-rest-framework.org/api-guide/relations/
 
@@ -16,11 +18,32 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "nick_name", "email")
 
 
+class StudyUserSerializer(serializers.Serializer):
+    study_name = serializers.CharField(source="study.study_name")
+    user_email = serializers.CharField(source="user.email")
+    is_approve = serializers.BooleanField()
+
+    class Meta:
+        model = StudyUserRelation
+        fields = ("study_name", "user_email", "is_approve")
+
+
 class StudySerializer(serializers.ModelSerializer):
-    status_readable = serializers.CharField(source="get_status_display", read_only=True)
+    status_readable = serializers.ChoiceField(
+        source="get_status_display", choices=Study.StatusType.choices, read_only=True
+    )
     leader = UserSerializer(many=False, read_only=True)
-    users = UserSerializer(many=True, read_only=True)
+    users = StudyUserSerializer(many=True, read_only=True, source="studyuserrelation_set")
     # users_waiting = UserSerializer(many=True, read_only=True)
+
+    def create(self, validated_data: dict[str, Any]) -> Study:
+        leader = validated_data["leader"]
+        instance = Study.objects.create(**validated_data)
+
+        studyuserrelation_set = [StudyUserRelation(user_id=leader.id, study_id=instance.id, is_approve=True)]
+        instance.studyuserrelation_set.add(*studyuserrelation_set, bulk=False)
+
+        return instance
 
     class Meta:
         model = Study
