@@ -19,4 +19,7 @@ from django.urls import include, path
 
 # from testapp.views import hello_rest_api
 
-urlpatterns = [path("admin/", admin.site.urls), path("userapp/", include("userapp.urls"))]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include("userapp.urls")),
+]

@@ -36,8 +36,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
-    "studyapp.apps.StudyappConfig",
-    "projectapp.apps.ProjectappConfig",
+    # "studyapp.apps.StudyappConfig",
+    # "projectapp.apps.ProjectappConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # Django RestFrameWork 사용
+    "rest_framework.authtoken",
     "seeding",  # 더미 데이터 생성용(폴더 이름)
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -143,10 +145,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+AUTH_USER_MODEL = "userapp.User"
