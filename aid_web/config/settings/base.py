@@ -155,5 +155,12 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "TITLE",
+    "DESCRIPTION": "DESCRIPTION",
+    "VERSION": "1.0.0",
+}
+
+
 AUTH_USER_MODEL = "userapp.User"
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
