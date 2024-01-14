@@ -17,8 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class StudySerializer(serializers.ModelSerializer):
+    status_readable = serializers.CharField(source="get_status_display", read_only=True)
     leader = UserSerializer(many=False, read_only=True)
     users = UserSerializer(many=True, read_only=True)
+    # users_waiting = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Study
