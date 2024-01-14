@@ -150,9 +150,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 AUTH_USER_MODEL = "userapp.User"
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
