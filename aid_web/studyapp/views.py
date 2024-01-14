@@ -1,7 +1,7 @@
 # Create your views here.
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Study
@@ -13,13 +13,13 @@ class StudyViewSet(viewsets.ModelViewSet):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
 
-    permission_classes = [IsAuthenticated, IsOwnerOfStudyOrAdmin]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfStudyOrAdmin]
 
     # override
     def perform_create(self, serializer):
-        serializer.save(leader=self.request.user, users=[self.request.user])
+        serializer.save(leader=self.request.user)
 
-    @action(detail=True, methods=["patch"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["patch"], permission_classes=[IsAuthenticatedOrReadOnly])
     def quit(self, request, pk):
         instance = self.get_object()
         instance.users.remove(request.user)
@@ -30,10 +30,10 @@ class StudyViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["patch"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["patch"], permission_classes=[IsAuthenticatedOrReadOnly])
     def join(self, request, pk):
         instance = self.get_object()
-        if instance.status != Study.OPENED:
+        if instance.status != Study.StatusType.OPENED:
             return Response({"detail": "Study not available"}, status=406)
         if instance.users.filter(id=request.user.id).exists():
             return Response({"detail": "User already joined study"}, status=403)
@@ -45,3 +45,7 @@ class StudyViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    # @action(detail=True, methods=["patch"], permission_classes=[IsOwnerOfStudyOrAdmin])
+    # def approval(self, request, pk):
+    #     self.get_object()
