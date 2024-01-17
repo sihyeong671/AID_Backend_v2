@@ -21,11 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
 class StudyUserSerializer(serializers.Serializer):
     study_name = serializers.CharField(source="study.study_name")
     user_email = serializers.CharField(source="user.email")
+    user_id = serializers.IntegerField(source="user.id")
     is_approve = serializers.BooleanField()
 
     class Meta:
         model = StudyUserRelation
-        fields = ("study_name", "user_email", "is_approve")
+        fields = ("study_name", "user_email", "user_id", "is_approve")
 
 
 class StudySerializer(serializers.ModelSerializer):
