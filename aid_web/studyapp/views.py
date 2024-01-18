@@ -1,12 +1,12 @@
 # Create your views here.
 from django.db import transaction
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from userapp.models import User
 
-from .models import Study
+from .models import Study, StudyUserRelation
 from .permissions import IsOwnerOfStudyOrAdmin
 from .serializer import StudySerializer, StudyUserSerializer
 
@@ -43,9 +43,9 @@ class StudyViewSet(viewsets.ModelViewSet):
     def join(self, request, pk):
         instance = self.get_object()
         if instance.status != Study.StatusType.OPENED:
-            return Response({"detail": "Study not available"}, status=403)
+            return Response({"detail": "Study not available"}, status=status.HTTP_403_FORBIDDEN)
         if instance.users.filter(id=request.user.id).exists():
-            return Response({"detail": "User already joined study"}, status=403)
+            return Response({"detail": "User already joined study"}, status=status.HTTP_403_FORBIDDEN)
         instance.users.add(request.user)
         instance.save()
 
@@ -73,12 +73,15 @@ class StudyViewSet(viewsets.ModelViewSet):
         url_path=r"approval/(?P<user_id>\d+)",
     )
     def approval_with_id(self, request, pk, user_id=None):
-        study_obj = self.get_object()
-        user_relation = study_obj.studyuserrelation_set.get(study_id=pk, user_id=user_id)
-        user_relation.is_approve = True
-        user_relation.save()
-        serializer = StudyUserSerializer(user_relation)
-        return Response(serializer.data)
+        try:
+            study_obj = self.get_object()
+            user_relation = study_obj.studyuserrelation_set.get(study_id=pk, user_id=user_id)
+            user_relation.is_approve = True
+            user_relation.save()
+            serializer = StudyUserSerializer(user_relation)
+            return Response(serializer.data)
+        except StudyUserRelation.DoesNotExist:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     # 참가자 삭제. 스터디 leader나 관리자만 가능.
     @action(
@@ -99,6 +102,7 @@ class StudyViewSet(viewsets.ModelViewSet):
     # TODO
     # 스터디 리더 변경을 아래와 같이 새로운 api endpoint로 둘 지,
     # ModelViewSet이나 Serializer의 update를 override해서 구현할 지 고민.
+    @transaction.atomic()
     @action(
         detail=True,
         methods=["patch"],
@@ -110,12 +114,15 @@ class StudyViewSet(viewsets.ModelViewSet):
         user_queryset = instance.users.filter(id=user_id)
         # TODO : exists와 get 둘 다 SQL 호출. 효율성 있게 추후 수정해보기.
         # 참가중인 유저를 leader로 만들기.
-        if user_queryset.exists():
-            instance.leader = user_queryset.get()
-        else:  # 참가중이지 않은 유저를 leader로 만들기. users에도 추가.
-            user_obj = User.objects.get(id=user_id)
-            instance.leader = user_obj
-            instance.users.add(user_obj)
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        try:
+            if user_queryset.exists():
+                instance.leader = user_queryset.get()
+            else:  # 참가중이지 않은 유저를 leader로 만들기. users에도 추가.
+                user_obj = User.objects.get(id=user_id)
+                instance.leader = user_obj
+                instance.users.add(user_obj)
+            instance.save()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
