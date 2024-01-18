@@ -1,12 +1,10 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 
-from .views import LoginView, UserViewset
-
-router = routers.DefaultRouter()
-router.register("user", UserViewset)
+from .views import AuthAPIView, SingupAPIView
 
 urlpatterns = [
-    path("", include(router.urls)),
-    path("login/", LoginView.as_view(), name="login"),
+    path("signup/", SingupAPIView.as_view(), name="signup"),
+    path("auth/", AuthAPIView.as_view(), name="auth"),
+    path("auth/refresh", TokenRefreshView.as_view()),
 ]

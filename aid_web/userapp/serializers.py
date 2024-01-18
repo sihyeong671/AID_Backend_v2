@@ -12,14 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):  # 회원가입
+        # create 메서드에서 DB save까지 실행
         user = User.objects.create(
-            email=validated_data["email"],
-            nick_name=validated_data["nick_name"],
+            email=validated_data["email"], nick_name=validated_data["nick_name"], password=validated_data["password"]
         )
-        user.set_password(validated_data["password"])
-        Token.objects.create(user=user)
-        user.save()
         return user
+
+
+# Signup(create)
+# login
+#
 
 
 class LoginSerializer(serializers.Serializer):
