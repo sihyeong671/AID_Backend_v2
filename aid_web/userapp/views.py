@@ -1,12 +1,13 @@
 import jwt
+from config.settings.base import SIMPLE_JWT
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
-
-from aid_web.config.settings.base import SIMPLE_JWT
 
 from .models import User
 from .serializers import UserSerializer
@@ -14,6 +15,18 @@ from .serializers import UserSerializer
 
 class SingupAPIView(APIView):
     # https://velog.io/@kjyeon1101/DRF-JWT-%EC%9D%B8%EC%A6%9D%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%9C-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85%EB%A1%9C%EA%B7%B8%EC%9D%B8#2-%EC%BB%A4%EC%8A%A4%ED%85%80%EC%9C%A0%EC%A0%80-abstractbaseuser
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        request=UserSerializer,
+        summary="회원가입 API",
+        description="유저 회원가입",
+        examples=[
+            OpenApiExample(
+                name="test user 1", value={"email": "test@test.com", "nick_name": "testuser1", "password": "test1"}
+            )
+        ],
+    )
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -38,6 +51,8 @@ class SingupAPIView(APIView):
 
 
 class AuthAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         # TODO
         # refresh token은 갱신시키면 안됨
