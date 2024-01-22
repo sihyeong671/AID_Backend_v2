@@ -1,5 +1,6 @@
 # Create your views here.
 from django.db import transaction
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -12,6 +13,122 @@ from .serializer import StudySerializer, StudyUserSerializer
 
 
 # TODO: queryset.get() 호출할 때 DoesNotExist 예외 처리
+@extend_schema_view(
+    # 사용법 method_name = extend_schema()
+    list=extend_schema(tags=["스터디 CRUD"], description="스터디 목록 확인", responses=StudySerializer),
+    retrieve=extend_schema(
+        tags=["스터디 CRUD"],
+        description="스터디 상세정보 확인",
+        responses=StudySerializer,
+        request=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="확인할 스터디 id", required=True
+            )
+        ],
+    ),
+    create=extend_schema(
+        tags=["스터디 CRUD"],
+        description="스터디 생성",
+        responses=StudySerializer,
+        request=StudySerializer,
+    ),
+    update=extend_schema(
+        tags=["스터디 CRUD"],
+        description="스터디 수정",
+        responses=StudySerializer,
+        request=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="수정할 스터디 id", required=True
+            )
+        ],
+    ),
+    destroy=extend_schema(
+        tags=["스터디 CRUD"],
+        description="스터디 삭제",
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="삭제할 스터디 id", required=True
+            )
+        ],
+    ),
+    quit=extend_schema(
+        tags=["스터디 나가기"],
+        description="스터디 나가기. API호출 대상이 되는 스터디에 현재 로그인 한 사용자가 있다면, 스터디를 나감. 스터디 leader라면 leader를 None으로 변경.",
+        request=None,
+        responses=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="나갈 스터디 id", required=True
+            )
+        ],
+    ),
+    join=extend_schema(
+        tags=["스터디 참가, 승인"],
+        description="스터디 참가.",
+        request=None,
+        responses=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="참가할 스터디 id", required=True
+            )
+        ],
+    ),
+    approval=extend_schema(
+        tags=["스터디 참가, 승인"],
+        description="스터디 참가 승인을 위한 참가자 목록 확인.",
+        request=None,
+        responses=StudyUserSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="참가자 목록을 확인할 스터디 id", required=True
+            )
+        ],
+    ),
+    approval_with_id=extend_schema(
+        tags=["스터디 참가, 승인"],
+        description="스터디 참가 승인.",
+        request=None,
+        responses=StudyUserSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="참가자를 승인할 스터디 id", required=True
+            ),
+            OpenApiParameter(
+                name="user_id", type=int, location=OpenApiParameter.PATH, description="참가 승인할 사용자 id", required=True
+            ),
+        ],
+    ),
+    reject_with_id=extend_schema(
+        tags=["스터디 참가, 승인"],
+        description="참가자 삭제.",
+        request=None,
+        responses=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="참가자를 삭제할 스터디 id", required=True
+            ),
+            OpenApiParameter(
+                name="user_id", type=int, location=OpenApiParameter.PATH, description="삭제할 사용자 id", required=True
+            ),
+        ],
+    ),
+    set_leader_with_id=extend_schema(
+        tags=["스터디 리더 변경"],
+        description="스터디 리더 변경.",
+        request=None,
+        responses=StudySerializer,
+        parameters=[
+            OpenApiParameter(
+                name="id", type=int, location=OpenApiParameter.PATH, description="리더를 변경할 스터디 id", required=True
+            ),
+            OpenApiParameter(
+                name="user_id", type=int, location=OpenApiParameter.PATH, description="리더로 설정할 사용자 id", required=True
+            ),
+        ],
+    ),
+)
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
@@ -113,8 +230,7 @@ class StudyViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         user_queryset = instance.users.filter(id=user_id)
         # TODO : exists와 get 둘 다 SQL 호출. 효율성 있게 추후 수정해보기.
-        # 참가중인 유저를 leader로 만들기.
-        try:
+        try:  # 참가중인 유저를 leader로 만들기.
             if user_queryset.exists():
                 instance.leader = user_queryset.get()
             else:  # 참가중이지 않은 유저를 leader로 만들기. users에도 추가.
