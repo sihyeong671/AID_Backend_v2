@@ -1,134 +1,19 @@
 # Create your views here.
 from django.db import transaction
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from userapp.models import User
 
+from .docs import study_extend_schema_view
 from .models import Study, StudyUserRelation
 from .permissions import IsOwnerOfStudyOrAdmin
 from .serializer import StudySerializer, StudyUserSerializer
 
 
 # TODO: queryset.get() 호출할 때 DoesNotExist 예외 처리
-@extend_schema_view(
-    # 사용법 method_name = extend_schema()
-    list=extend_schema(tags=["스터디 CRUD"], description="스터디 목록 확인", responses=StudySerializer),
-    retrieve=extend_schema(
-        tags=["스터디 CRUD"],
-        description="스터디 상세정보 확인",
-        responses=StudySerializer,
-        request=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="확인할 스터디 id", required=True
-            )
-        ],
-    ),
-    create=extend_schema(
-        tags=["스터디 CRUD"],
-        description="스터디 생성",
-        responses=StudySerializer,
-        request=StudySerializer,
-    ),
-    update=extend_schema(
-        tags=["스터디 CRUD"],
-        description="스터디 수정",
-        responses=StudySerializer,
-        request=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="수정할 스터디 id", required=True
-            )
-        ],
-    ),
-    destroy=extend_schema(
-        tags=["스터디 CRUD"],
-        description="스터디 삭제",
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="삭제할 스터디 id", required=True
-            )
-        ],
-    ),
-    quit=extend_schema(
-        tags=["스터디 나가기"],
-        description="스터디 나가기. API호출 대상이 되는 스터디에 현재 로그인 한 사용자가 있다면, 스터디를 나감. 스터디 leader라면 leader를 None으로 변경.",
-        request=None,
-        responses=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="나갈 스터디 id", required=True
-            )
-        ],
-    ),
-    join=extend_schema(
-        tags=["스터디 참가, 승인"],
-        description="스터디 참가.",
-        request=None,
-        responses=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="참가할 스터디 id", required=True
-            )
-        ],
-    ),
-    approval=extend_schema(
-        tags=["스터디 참가, 승인"],
-        description="스터디 참가 승인을 위한 참가자 목록 확인.",
-        request=None,
-        responses=StudyUserSerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="참가자 목록을 확인할 스터디 id", required=True
-            )
-        ],
-    ),
-    approval_with_id=extend_schema(
-        tags=["스터디 참가, 승인"],
-        description="스터디 참가 승인.",
-        request=None,
-        responses=StudyUserSerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="참가자를 승인할 스터디 id", required=True
-            ),
-            OpenApiParameter(
-                name="user_id", type=int, location=OpenApiParameter.PATH, description="참가 승인할 사용자 id", required=True
-            ),
-        ],
-    ),
-    reject_with_id=extend_schema(
-        tags=["스터디 참가, 승인"],
-        description="참가자 삭제.",
-        request=None,
-        responses=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="참가자를 삭제할 스터디 id", required=True
-            ),
-            OpenApiParameter(
-                name="user_id", type=int, location=OpenApiParameter.PATH, description="삭제할 사용자 id", required=True
-            ),
-        ],
-    ),
-    set_leader_with_id=extend_schema(
-        tags=["스터디 리더 변경"],
-        description="스터디 리더 변경.",
-        request=None,
-        responses=StudySerializer,
-        parameters=[
-            OpenApiParameter(
-                name="id", type=int, location=OpenApiParameter.PATH, description="리더를 변경할 스터디 id", required=True
-            ),
-            OpenApiParameter(
-                name="user_id", type=int, location=OpenApiParameter.PATH, description="리더로 설정할 사용자 id", required=True
-            ),
-        ],
-    ),
-)
+@study_extend_schema_view
 class StudyViewSet(viewsets.ModelViewSet):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
@@ -142,10 +27,11 @@ class StudyViewSet(viewsets.ModelViewSet):
         serializer.save(leader=self.request.user)
 
     # 스터디 나가기. 나가려는 사람이 leader라면 leader를 None으로 변경.
-    @action(detail=True, methods=["patch"], permission_classes=[IsAuthenticatedOrReadOnly])
+    @action(detail=True, methods=["delete"], permission_classes=[IsAuthenticatedOrReadOnly])
     @transaction.atomic()
     def quit(self, request, pk):
         instance = self.get_object()
+        # TODO: 스터디 참가하지 않았는데 나가기 시도 시 4xx error 발생시키기
         instance.users.remove(request.user)
         if instance.leader == request.user:
             instance.leader = None
@@ -203,7 +89,7 @@ class StudyViewSet(viewsets.ModelViewSet):
     # 참가자 삭제. 스터디 leader나 관리자만 가능.
     @action(
         detail=True,
-        methods=["patch"],
+        methods=["delete"],
         permission_classes=[IsOwnerOfStudyOrAdmin],
         url_path=r"reject/(?P<user_id>\d+)",
     )
@@ -211,6 +97,7 @@ class StudyViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         if int(user_id) == instance.leader.id:
             return Response({"detail": "Cannot reject leader"}, status=403)
+        # TODO: 참가중이지 않은 user 삭제 시도 시 4xx error 발생시키기
         instance.users.remove(user_id)
         instance.save()
         serializer = self.get_serializer(instance)
