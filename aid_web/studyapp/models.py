@@ -10,7 +10,7 @@ class Study(Model):
         CLOSED = 1, "Closed"
         FINISHED = 2, "Finished"
 
-    study_name = models.CharField(max_length=50, unique=True, blank=True)
+    study_name = models.CharField(max_length=50, unique=True)
     study_description = models.CharField(max_length=300, blank=True)
     study_link = models.CharField(max_length=500, null=True)
     status = models.IntegerField(choices=StatusType.choices, default=StatusType.OPENED)
