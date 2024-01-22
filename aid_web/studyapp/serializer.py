@@ -6,6 +6,8 @@ from userapp.models import User
 
 from .models import Study, StudyUserRelation
 
+# from .docs import study_extend_schema_serializer
+
 # https://www.django-rest-framework.org/api-guide/relations/
 
 # CRUD별로 다른 serializer를 써야할 때
@@ -19,6 +21,23 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "nick_name", "email")
 
 
+@extend_schema_serializer(
+    many=True,
+    examples=[
+        OpenApiExample(
+            "스터디 내 사용자 정보",
+            summary="스터디 내 사용자 정보",
+            value={
+                "study_name": "study1",
+                "user_email": "testname@example.com",
+                "user_id": 1,
+                "is_approve": True,
+            },
+            request_only=False,
+            response_only=True,
+        )
+    ],
+)
 class StudyUserSerializer(serializers.Serializer):
     study_name = serializers.CharField(source="study.study_name")
     user_email = serializers.CharField(source="user.email")
@@ -34,8 +53,8 @@ class StudyUserSerializer(serializers.Serializer):
     examples=[
         OpenApiExample(
             "스터디 정보",
-            summary="스터디 정보 summary",
-            description="스터디 정보 description",
+            summary="스터디 정보",
+            description="스터디 정보 출력",
             value={
                 "id": 1,
                 "status_readable": "Opened",
@@ -55,8 +74,8 @@ class StudyUserSerializer(serializers.Serializer):
         ),
         OpenApiExample(
             "스터디 생성",
-            summary="스터디 생성 summary",
-            description="스터디 생성 description",
+            summary="스터디 생성",
+            description="스터디 생성 및 수정용 response body",
             value={
                 "study_name": "test study name",
                 "study_description": "test study description",
