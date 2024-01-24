@@ -36,7 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
-    # "studyapp.apps.StudyappConfig",
+    "studyapp.apps.StudyappConfig",
     # "projectapp.apps.ProjectappConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -126,7 +126,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+# Datetime의 현재 시간을 한국 시간으로 설정.
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
