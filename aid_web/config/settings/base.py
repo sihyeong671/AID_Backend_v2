@@ -47,9 +47,11 @@ INSTALLED_APPS = [
     "rest_framework",  # Django RestFrameWork 사용"
     "seeding",  # 더미 데이터 생성용(폴더 이름)
     "drf_spectacular",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleward.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -164,7 +166,13 @@ SPECTACULAR_SETTINGS = {
 
 AUTH_USER_MODEL = "userapp.User"
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+]
+
 
 # SIMPLE_JWT = {
 #     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
