@@ -4,19 +4,6 @@
 version: '3.8'
 
 services:
-  web-server:
-    container_name: nginx
-    image: nginx:latest
-    restart: always
-    environment:
-      TZ: "Asia/Seoul"
-    volumes:
-      - ./config/nginx.test.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    networks:
-      - aid
-
   server:
     container_name: DjangoApp
     depends_on:
@@ -32,7 +19,7 @@ services:
       - 8000:8000
     environment:
       TZ: "Asia/Seoul"
-      DJANGO_SETTINGS_MODULE: config.settings.test
+      DJANGO_SETTINGS_MODULE: config.settings.prod
     networks:
       - aid
 
