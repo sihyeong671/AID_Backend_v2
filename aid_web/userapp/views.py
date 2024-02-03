@@ -44,6 +44,12 @@ class LoginAPIView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = [SessionAuthentication]
 
+    @extend_schema(
+        request=LoginSerializer,
+        summary="로그인 API",
+        description="유저 로그인",
+        examples=[OpenApiExample(name="test user 1", value={"email": "test@test.com", "password": "test1"})],
+    )
     def post(self, request):
         data = request.data
         serializer = LoginSerializer(data=data)
@@ -54,6 +60,10 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
+    @extend_schema(
+        summary="로그아웃 API",
+        description="유저 로그아웃",
+    )
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
@@ -63,6 +73,10 @@ class UserView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [SessionAuthentication]
 
+    @extend_schema(
+        summary="User read",
+        description="유저 정보 가져오는 API",
+    )
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({"user": serializer.data}, status=status.HTTP_200_OK)
