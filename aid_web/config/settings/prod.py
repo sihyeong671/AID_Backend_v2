@@ -3,9 +3,9 @@ from .base import *  # noqa
 
 # TODO: production용 allowed host 설정
 # TODO: user uploaded media file. https://docs.djangoproject.com/en/4.1/topics/security/#user-uploaded-content
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
-DEBUG = True
+DEBUG = False
 SESSION_COOKIE_SECURE = True
 
 dotenv_path = BASE_DIR / ".prod.env"
