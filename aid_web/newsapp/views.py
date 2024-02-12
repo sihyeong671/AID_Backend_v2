@@ -1,5 +1,5 @@
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 
 from .models import News
 from .serializer import NewsSerializer
@@ -18,4 +18,4 @@ class NewsViewSet(
     queryset = News.objects.all()
     serializer_class = NewsSerializer
 
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]

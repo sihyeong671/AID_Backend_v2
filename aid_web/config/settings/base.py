@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "seeding",  # 더미 데이터 생성용(폴더 이름)
     "drf_spectacular",
     "corsheaders",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -206,3 +207,4 @@ CORS_ALLOWED_ORIGINS = [
 # }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
