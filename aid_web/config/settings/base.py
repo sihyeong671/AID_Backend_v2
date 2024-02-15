@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
     "studyapp.apps.StudyappConfig",
+    "recruitapp.apps.RecruitappConfig",
     "faqapp.apps.FAQappConfig",
     # "projectapp.apps.ProjectappConfig",
     "django.contrib.admin",
@@ -52,7 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleward.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
