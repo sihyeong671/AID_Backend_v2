@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
     "studyapp.apps.StudyappConfig",
+    "newsapp.apps.NewsappConfig",
     "recruitapp.apps.RecruitappConfig",
     "faqapp.apps.FAQappConfig",
     # "projectapp.apps.ProjectappConfig",
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "seeding",  # 더미 데이터 생성용(폴더 이름)
     "drf_spectacular",
     "corsheaders",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -141,6 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_URL = "media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -203,3 +206,6 @@ CORS_ALLOWED_ORIGINS = [
 #     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
 #     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 # }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
