@@ -7,4 +7,4 @@ from . import models
 class UserAdmin(admin.ModelAdmin):
     list_display = ("email", "nick_name", "created_at")
 
-    list_display_links = ("email", "nick_name")
+    list_display_links = ("email",)
