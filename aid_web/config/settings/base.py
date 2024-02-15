@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "userapp.apps.UserappConfig",
     "studyapp.apps.StudyappConfig",
     "newsapp.apps.NewsappConfig",
+    "recruitapp.apps.RecruitappConfig",
     "faqapp.apps.FAQappConfig",
     # "projectapp.apps.ProjectappConfig",
     "django.contrib.admin",
