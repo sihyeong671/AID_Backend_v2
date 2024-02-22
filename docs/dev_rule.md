@@ -7,14 +7,15 @@
 > **hotfix/<수정내용>**: 긴급한 수정내용인 경우 main에서 새로 분기하여 작업해 main에 merge하고 삭제한다.<br/>
 
 ## 작업 후 PR 방법
+_웬만하면 feat<기능 내용>에서 작업하는 것을 권장_
+
 feat/<기능 내용>에서 작업한 후 아래 내용 실행
 ```sh
 git pull upstream dev # 달라진 내용 있으면 반영
-git checkout -b dev
+git checkout dev
 git merge feat/<기능 내용>
 ```
 이후 깃허브로 이동후 PR 보내기
-
 
 ## Commit Convention
 
