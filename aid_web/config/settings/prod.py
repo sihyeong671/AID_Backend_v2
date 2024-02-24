@@ -5,10 +5,11 @@ from .base import *  # noqa
 # TODO: user uploaded media file. https://docs.djangoproject.com/en/4.1/topics/security/#user-uploaded-content
 ALLOWED_HOSTS = ["backend.pnuaid.com"]
 
-CSRF_TRUSTED_ORIGINS = ["https://*.pnuaid.com/", "https://*.127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://*.pnuaid.com/", "https://*.pnuaid.com/admin", "https://*.127.0.0.1"]
 
 DEBUG = False
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 dotenv_path = BASE_DIR / ".prod.env"
 DATABASES = set_db(dotenv_path)
