@@ -1,11 +1,10 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
 from .views import StudyViewSet
 
-router = routers.DefaultRouter()
-router.register("study", StudyViewSet)
+# router = routers.DefaultRouter()
+# router.register("study", StudyViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("study", StudyViewSet.as_view()),
 ]
