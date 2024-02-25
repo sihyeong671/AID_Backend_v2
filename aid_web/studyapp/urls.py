@@ -6,5 +6,5 @@ from .views import StudyViewSet
 # router.register("study", StudyViewSet)
 
 urlpatterns = [
-    path("study", StudyViewSet.as_view()),
+    path("study/", StudyViewSet.as_view()),
 ]
