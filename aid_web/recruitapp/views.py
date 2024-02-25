@@ -26,7 +26,7 @@ class RecruitAPIView(APIView):
         data = {
             "ko": {
                 "title": "신입 부원 모집",
-                "recruitment_schedule": "24.2.26 ~ 24.3.8",
+                "recruitment_schedule": "24.02.26 ~ 24.03.08",
                 "num_of_people_recruited": "10 ~ 20명",
                 "recruitment_target": "인공지능에 관심있이 있고 주도적으로 공부할 사람",
                 "recruitment_link": "https://forms.gle/k4NcvS7VG8PUhe927",
@@ -34,9 +34,9 @@ class RecruitAPIView(APIView):
                 "announcement_schedule": "03.09",
             },
             "en": {
-                "title": "Recruiting new club members",
-                "recruitment_schedule": "24.2 ~ 24.3",
-                "num_of_people_recruited": "10 ~ 20",
+                "title": "New members Recruitment",
+                "recruitment_schedule": "24.02.26 ~ 24.03.08",
+                "num_of_people_recruited": "10 to 20",
                 "recruitment_target": "People who are interested in AI and want to take the lead in studying it",
                 "recruitment_link": "https://forms.gle/k4NcvS7VG8PUhe927",
                 "OT_schedule": "03.15",
