@@ -1,9 +1,7 @@
 # Docker
 
-## 환경 별 docker-compose 및 실행 방법
-Develop(Local) Server 개발 환경: PostgreSQL database 서버는 docker로 띄우고, Django는 local에서 실행
-
-Test 환경 : PostgreSQL database 서버 및 Django 모두 docker로 실행
+## docker-compose를 사용한 local 서버 환경 만들기
+Develop(Local) Server 개발 환경: run_server.sh 를 통해 도커 컨테이너가 올라갑니다.
 
 ## docker관련 파일 구성요소
 **docker-compose.yaml**
@@ -32,5 +30,4 @@ Test 환경 : PostgreSQL database 서버 및 Django 모두 docker로 실행
   - django 공식문서에서도 배포 환경에서 runserver 사용을 권장하지 않고, gunicorn을 사용하면 요청 분산이 가능해짐.
 
 ### Dockerfile
-Django용 이미지 생성을 위한 Dockerfile. poetry 설치 후, pyproject.toml 내의 패키지 설치
-Django 서버 이미지 생성을 위한 도커 파일
+Django용 이미지 생성을 위한 Dockerfile. poetry 설치 후, pyproject.toml, poetry.lock을 이용한 패키지 설치<br/>
