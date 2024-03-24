@@ -19,6 +19,25 @@ services:
     networks:
       - aid
 
+  server:
+    container_name: DjangoApp
+    depends_on:
+      - db
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./aid_web:/aid_web
+    command: sh -c "cd /aid_web && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    environment:
+      TZ: "Asia/Seoul"
+      DJANGO_SETTINGS_MODULE: config.settings.local
+    networks:
+      - aid
+
 networks:
   aid:
     driver: bridge
