@@ -20,18 +20,28 @@ class RecruitAPIView(APIView):
         end_date = datetime(2024, 3, 8, 23, 59, 59)
 
         if cur_date >= end_date or start_date >= cur_date:
-            data = {"title": "지원 기간이 아닙니다"}
+            data = {"ko": {"title": "지원 기간이 아닙니다"}, "en": {"title": "It's not a application period"}}
             return Response({"data": data}, status=status.HTTP_200_OK)
 
         data = {
-            "title": "신입 부원 모집",
-            "recruitment_schedule": "24.2 ~ 24.3",
-            "num_of_people_recruited": "0명",
-            "recruitment_target": "인공지능에 관심있는 사람",
-            "recruitment_link": "링크 미정",
-            "interview_schedule": "일정 미정",
-            "OT_schedule": "일정 미정",
-            "announcement_schedule": "일정 미정",
+            "ko": {
+                "title": "신입 부원 모집",
+                "recruitment_schedule": "24.02.26 ~ 24.03.08",
+                "num_of_people_recruited": "10 ~ 20명",
+                "recruitment_target": "인공지능에 관심있이 있고 주도적으로 공부할 사람",
+                "recruitment_link": "https://forms.gle/k4NcvS7VG8PUhe927",
+                "OT_schedule": "03.15",
+                "announcement_schedule": "03.09",
+            },
+            "en": {
+                "title": "New members Recruitment",
+                "recruitment_schedule": "24.02.26 ~ 24.03.08",
+                "num_of_people_recruited": "10 to 20",
+                "recruitment_target": "People who are interested in AI and want to take the lead in studying it",
+                "recruitment_link": "https://forms.gle/k4NcvS7VG8PUhe927",
+                "OT_schedule": "03.15",
+                "announcement_schedule": "03.09",
+            },
         }
 
         res = Response({"data": data}, status=status.HTTP_200_OK)
