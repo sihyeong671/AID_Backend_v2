@@ -23,13 +23,22 @@ class Study(Model):
     max_participants = models.PositiveIntegerField(default=0)
     leader = models.CharField(max_length=50, null=True)
     participants = ArrayField(models.CharField(max_length=50), blank=True, null=True)
-    img_url = models.ImageField(upload_to="study_image/", default=None)
+    img_url = models.ImageField(upload_to="study_image/", blank=True, default=None)
     created_at = models.DateTimeField(auto_now=True)
-    study_start = models.DateTimeField(null=True)
-    study_end = models.DateTimeField(null=True)
+    study_start = models.DateTimeField(blank=True, null=True)
+    study_end = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.study_name
+
+    def save(self, *args, **kwargs):
+        if self.img_url.name == "" or self.img_url.name is None:
+            self.img_url = (
+                "study_image/study_default.png"
+                if self.study_type == self.StudyType.STUDY
+                else "study_image/project_default.png"
+            )
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "Study"

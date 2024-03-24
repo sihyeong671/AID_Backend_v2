@@ -12,7 +12,7 @@ services:
     environment:
       TZ: "Asia/Seoul"
     volumes:
-      - ./config/nginx.test.conf:/etc/nginx/nginx.conf
+      - ./config/nginx.prod.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80 # TODO: https 연결
     networks:
