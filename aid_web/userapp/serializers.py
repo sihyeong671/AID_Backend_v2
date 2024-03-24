@@ -1,5 +1,5 @@
-from django.contrib.auth import authenticate
-from django.core.exceptions import ValidationError
+import uuid
+
 from rest_framework import serializers
 
 from .models import User
@@ -14,28 +14,16 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):  # 회원가입
         password = validated_data.pop("password", None)
 
+        # 처음 회원 가입하는 경우 nick name 자동 생성
+        nick_name = f"user-{uuid.uuid1()[:10]}"
+
         if password is not None:
             user = User.objects.create(
                 email=validated_data["email"],
-                nick_name=validated_data["nick_name"],
+                nick_name=nick_name,
             )
             user.set_password(password)
-            user.save()
-        return user
-
-
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(required=True, write_only=True)
-
-    def check_user(self, validated_data):
-        email = validated_data["email"]
-        password = validated_data["password"]
-
-        user = authenticate(email=email, password=password)
-
-        if not user:
-            raise ValidationError("user not found")
+            # save
         return user
 
 
