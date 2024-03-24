@@ -15,6 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+load_dotenv("./.base.env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # settings 폴더의 추가로 .parent 추가.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -24,13 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-e01x0vyzw!rom74fi-v$l%ee-pi75r7yluzql0%!jkb-1s1$m!"
+SECRET_KEY = os.environ["django_secret_key"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = True
 
 # Application definition
 
@@ -152,6 +154,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        # "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -176,6 +179,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:3000",
+    "https://pnu-aid.github.io",
+    "https://pnuaid.com",
 ]
 
 
